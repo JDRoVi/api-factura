@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\EmployeeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,4 +22,5 @@ Route::prefix('/api')->group(function () {
     //Rutas automaticas RESTful
     Route::resource('/user',UserController::class,['except'=>['create','edit']]);
     Route::resource('/client',ClientController::class,['except'=>['create','edit']]);
+    Route::resource('/employee',EmployeeController::class,['except'=>['create','edit']]);
 });

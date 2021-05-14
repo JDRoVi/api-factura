@@ -26,6 +26,8 @@ class UserController extends Controller
     public function show($id){
         $data=User::find($id);
         if(is_object($data)){
+            //$data=$data->load('employees');
+            $data=$data->load('Client');
             $response=array(
                 'status'=>'success',
                 'code'=>200,
@@ -48,8 +50,6 @@ class UserController extends Controller
         $rules=[
             'nombreUsuario'=>'required|email|unique:usuario',
             'password'=>'required',
-            'idEmpleado'=>'',
-            'idCliente'=>'',
             'nivelUsuario'=>'require'
 
 
@@ -81,11 +81,83 @@ class UserController extends Controller
         return response()->json($response,$response['code']);
     }
 
-    public function update(Request $request){
+    /*public function update(Request $request){
+        $json = $request->input('json', null);
+        $data = json_decode($json, true);
+        if (!empty($data)) {
+            $data = array_map('trim', $data);
+            $rules = [ //se dictan las reglas en cuanto al ingreso de los datos
+                'id'=>'required',
+                //'idCliente'=>'required',
+                //'idEmpleado'=>'required',
+                'nombreUsuario'=>'required',
+                'contraseña' => 'required',
+                'correo' => 'required|email'
+            ];
+            $validate = \validator($data, $rules);
+            if ($validate->fails()) { //determina si los datos siguen las reglas
+                $response = array(
+                    'status' => 'error',
+                    'code' => 406,
+                    'message' => 'Los datos del cliente enviados son incorrectos',
+                    'errors' => $validate->errors()
+                );
+            } else {
+                $id=$data['id'];
+                unset($data['id']);
+                unset($data['created_at']);
+                unset($data['idCliente']);
+                unset($data['idEmpleado']);
+                $updated = User::where('id', $id)->update($data);
+                if ($updated > 0) {
+                    $response = array(
+                        'status' => 'success',
+                        'code' => 200,
+                        'message' => 'Datos actualizados exitosamente'
+                    );
+                } else {
+                    $response = array(
+                        'status' => 'error',
+                        'code' => 400,
+                        'message' => 'No se pudo actualizar los datos'
+                    );
+                }
+            }
+        } else {
+            $response = array(
+                'status' => 'error',
+                'code' => 400,
+                'message' => 'Faltan Datos'
+            );
+        }
+        return response()->json($response,$response['code']);
 
-    }
+    }*/
+
     public function destroy($id){
-
+        if (isset($id)) {
+            $deleted = User::where('id', $id)->delete();
+            if ($deleted) {
+                $response = array(
+                    'status' => 'success',
+                    'code' => 200,
+                    'message' => 'Eliminado correctamente'
+                );
+            } else {
+                $response = array(
+                    'status' => 'error',
+                    'code' => 400,
+                    'message' => 'Problemas al eleminar el recurso, puede ser que el recurso no exista'
+                );
+            }
+        } else {
+            $response = array(
+                'status' => 'error',
+                'code' => 400,
+                'message' => 'Falta el identificador del recurso'
+            );
+        }
+        return response()->json($response, $response['code']);
     }
 
 

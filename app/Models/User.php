@@ -43,7 +43,10 @@ class User extends Authenticatable
     ];
 
 
-    /*public function employees(){
-        return $this->belongsTo('App\Models\Employee');
-    }*/
+    public function Client(){
+        //return $this->belongsTo('App\Models\Employee');
+        return $this->belongsTo('App\Models\Client','idCliente');
+    }
+
+
 }
