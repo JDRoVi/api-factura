@@ -68,7 +68,7 @@ class UserController extends Controller
             $user->idEmployee=$data['idEmpleado'];
             $user->idClient=$data['idCliente'];
             $user->UserName=$data['NombreUsuario'];
-            $user->Role='nivelUsuario';
+            $user->Role=['nivelUsuario'];
             $user->email=$data['Correo'];
             $user->password=hash('sha256',$data['contraseña']);
             $user->save();

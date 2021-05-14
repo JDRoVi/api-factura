@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class ProviderController extends Controller
 {
+    public function __construct()
+    {
+        
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,17 +19,13 @@ class ProviderController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $data = Provider::all();
+        $response = array(
+            'status' => 'success',
+            'code' => 200,
+            'data' => $data
+        );
+        return response() -> json($response, 200);
     }
 
     /**
@@ -35,7 +36,40 @@ class ProviderController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $json = $request -> input('json', null);
+        $data = json_decode($json, true);
+        if(!empty($data)){
+            $data = array_map('trim', $data);
+            $rules[
+                'idEmpleado' => 'required|alpha'
+                'nombre' => 'required|alpha'
+                'cedulaJuridica' => 'required|alpha'
+                'direccion' => 'required|alpha'
+                'VolumenVentas' => 'required|alpha' 
+            ];
+            $validate = \validator($data, $rules);
+            if($validate -> fails()){
+                $response = array(
+                    'status' => 'error',
+                    'code' => 406,
+                    'message' => 'Los datos son incorrectos',
+                    'errors' => $validate -> erros()
+                );
+            }else{
+                $provider = new Provider();
+                $provider -> idEmpleado = ['idEmpleado'];
+                $provider -> nombre = ['nombre'];
+                $provider -> cedulaJuridica = ['cedulaJuridica'];
+                $provider -> direccion = ['direccion'];
+                $provider -> VolumenVentas = ['VolumenVentas'];
+                $provider -> save();
+                $response = array(
+                    'status' => 'success'
+                    'code' => 200,
+                    'message' => 'Datos almacenados exitosamente'
+                )
+            }
+        }
     }
 
     /**
@@ -44,20 +78,23 @@ class ProviderController extends Controller
      * @param  \App\Models\Provider  $provider
      * @return \Illuminate\Http\Response
      */
-    public function show(Provider $provider)
+    public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Provider  $provider
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Provider $provider)
-    {
-        //
+        $data=Provider::find($id);
+        if(is_object($data)){
+            $response=array(
+                'status'=>'success',
+                'code'=>200,
+                'data'=>$data
+            );
+        }else{
+            $response=array(
+                'status'=>'error',
+                'code'=>404,
+                'message'=>'Recurso no encontrado'
+            );
+        }
+        return response()->json($response,$response['code']);
     }
 
     /**
