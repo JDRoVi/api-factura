@@ -36,8 +36,9 @@ class ClientController extends Controller
     public function show($id)
     { //busqueda
         $data = Client::find($id);
+        $data=$data->load('user');
         if (is_object($data)) {
-            $data=$data->load('user'); //me retorna el user que tiene el cliente 
+           // $data=$data->load('user'); //me retorna el user que tiene el cliente 
             $response = array(
                 'status' => 'success',
                 'code' => 200,

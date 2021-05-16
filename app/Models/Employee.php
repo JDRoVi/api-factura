@@ -12,6 +12,6 @@ class Employee extends Model
     protected $fillable=['id','nombre','apellido','direccion','telefono','correo','tipo'];
     
     public function user(){
-        return $this->belongsTo('App\Models\User','idEmpleado');
+        return $this->hasOne('App\Models\User','idEmpleado');
     }
 }

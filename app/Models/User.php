@@ -48,5 +48,8 @@ class User extends Authenticatable
         return $this->belongsTo('App\Models\Client','idCliente');
     }
 
+    public function Emply(){
+        return $this->belongsTo('App\Models\Employee','idEmpleado');
+    }
 
 }
