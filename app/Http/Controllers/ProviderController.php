@@ -117,7 +117,7 @@ class ProviderController extends Controller
             $rules = [
                 'id' => 'required',
                 'idEmpleado' => 'required',
-                'nombre' => 'required|alpha',
+                'nombre' => 'required',
                 'cedulaJuridica' => 'required|numeric',
                 'direccion' => 'required',
                 'VolumenVentas' => 'required|numeric'
