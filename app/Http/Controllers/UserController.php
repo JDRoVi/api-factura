@@ -26,6 +26,7 @@ class UserController extends Controller
     public function show($id){
         $data=User::find($id);
         if(is_object($data)){
+            $data=$data->load('Client');
             $response=array(
                 'status'=>'success',
                 'code'=>200,
@@ -50,7 +51,7 @@ class UserController extends Controller
             'password'=>'required',
             'idEmpleado'=>'',
             'idCliente'=>'',
-            'nivelUsuario'=>'require'
+            'nivelUsuario'=>'required'
 
 
         ];

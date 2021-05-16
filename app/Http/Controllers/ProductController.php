@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function __construct()
+    public function __Construct()
     {
 
     }
@@ -19,7 +19,13 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        $data = Product::all();
+        $response = array(
+            'status' => 'success',
+            'code' => 200,
+            'data' => $data
+        );
+        return response() -> json($response, 200);
     }
 
     /**
@@ -30,7 +36,44 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $json = $request -> input('json', null);
+        $data = json_decode($json, true);
+        if(!empty($data)){
+            $data = array_map('trim', $data);
+            $rules = [
+                //'id' => 'numeric',
+                'codigoProducto'=>'required|numeric',
+                'idprovedor' => 'required|numeric',
+                'nombre' => 'required|alpha',
+                'cantidad' => 'required|numeric',
+                'precioUnidad' => 'required|numeric'
+            ];
+            $validate = \validator($data, $rules);
+            if($validate -> fails()){
+                $response = array(
+                    'status' => 'error',
+                    'code' => 406,
+                    'message' => 'Los datos son incorrectos',
+                    'errors' => $validate -> errors()
+                );
+            }else{
+                $product = new Product();
+                //$product -> id = $data['id'];
+                $product -> codigoProducto = $data['codigoProducto'];
+                $product -> idProvedor = $data['idprovedor'];
+                $product -> nombre = $data['nombre'];
+                $product -> cantidad = $data['cantidad'];
+                $product -> fechaCaducidad = $data['fechaCaducidad'];
+                $product -> precioUnidad = $data['precioUnidad'];
+                $product -> save();
+                $response = array(
+                    'status' => 'success',
+                    'code' => 200,
+                    'message' => 'Datos almacenados exitosamente'
+                );
+            }
+            return response()->json($response,$response['code']);
+        }
     }
 
     /**
@@ -39,9 +82,24 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product)
+    public function show($id)
     {
-        //
+        //$id = Product::where('codigoProducto',$codigo) -> get($data);
+        $data=Product::find($id);
+        if(is_object($data)){
+            $response=array(
+                'status'=>'success',
+                'code'=>200,
+                'data'=>$data
+            );
+        }else{
+            $response=array(
+                'status'=>'error',
+                'code'=>404,
+                'message'=>'Recurso no encontrado'
+            );
+        }
+        return response()->json($response,$response['code']);
     }
 
     /**
@@ -51,9 +109,54 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request)
     {
-        //
+        $json = $request -> input('json', null);
+        $data = json_decode($json, true);
+        if(!empty($data)){
+            $data = array_map('trim', $data);
+            $rules = [
+                'codigoProducto'=>'required|numeric',
+                'idprovedor' => 'required|numeric',
+                'nombre' => 'required|alpha',
+                'cantidad' => 'required|numeric',
+                'precioUnidad' => 'required|numeric'
+            ];
+            $validate = \validator($data, $rules);
+            if($validate -> fails()){
+                $response = array(
+                    'status' => 'error',
+                    'code' => 406,
+                    'message' => 'Los datos introducidos son incorrectos',
+                    'errors' => $validate -> errors()
+                );
+            }else{
+                $id = $data['id'];
+                unset($data['codigoProducto']);
+                unset($data['created_at']);
+                $updated = Product::where('id',$id) -> update($data);
+                if($updated > 0){
+                    $response = array(
+                        'status'=>'success',
+                        'code'=>200,
+                        'message' => 'Datos actualizados correctamente'
+                    );
+                }else{
+                    $response = array(
+                        'status'=>'error',
+                        'code'=>400,
+                        'message'=>'No se pudo actualizar los datos'
+                    );
+                }
+            }
+        }else{
+            $response = array(
+                'status'=>'error',
+                'code'=>400,
+                'message'=>'Faltan parametros'
+            );
+        }
+        return response() -> json($response, $response['code']);
     }
 
     /**
@@ -62,8 +165,30 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy($id)
     {
-        //
+        if(isset($id)){
+            $deleted = Product::where('id', $id) -> delete();
+            if($deleted){
+                $response = array(
+                    'status'=>'success',
+                    'code'=>200,
+                    'message' => 'Datos eliminados correctamente'
+                );
+            }else{
+                $response = array(
+                    'status'=>'error',
+                    'code'=>400,
+                    'message'=>'Problema al eliminar datos, puede que el recurso no exista'
+                );
+            }
+        }else{
+            $response = array(
+                'status'=>'error',
+                'code'=>400,
+                'message'=>'Falta el identificador de los datos'
+            );
+        }
+        return response() -> json($response, $response['code']);
     }
 }
