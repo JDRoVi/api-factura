@@ -58,7 +58,7 @@ class ProductController extends Controller
                 );
             }else{
                 $product = new Product();
-                //$product -> id = $data['id'];
+                //$product -> id = $data['id']; PREGUNTAR COM INSERTAR EN TABLA AUTOINCREMENTABLE
                 $product -> codigoProducto = $data['codigoProducto'];
                 $product -> idProvedor = $data['idprovedor'];
                 $product -> nombre = $data['nombre'];
