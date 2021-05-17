@@ -7,11 +7,12 @@ use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
 {
-   
+
     public function index()
     {
         $data = Employee::all();
         if (!empty($data)) {
+            $data = $data->load('company');
             $response = array(
                 'status' => 'success',
                 'code' => 200,
@@ -62,7 +63,7 @@ class EmployeeController extends Controller
             $category->direccion = $data['direccion'];
             $category->telefono = $data['telefono'];
             $category->correo = $data['correo'];
-            $category->tipo =$data['tipo'];
+            $category->tipo = $data['tipo'];
             $category->save();
             $response = array(
                 'status' => 'success',
@@ -84,7 +85,7 @@ class EmployeeController extends Controller
     {
         $data = Employee::find($id);
         if (is_object($data)) {
-            $data=$data->load('user'); //me retorna el user que tiene el empleado
+            $data = $data->load('company'); //me retorna el user que tiene el empleado
             $response = array(
                 'status' => 'success',
                 'code' => 200,

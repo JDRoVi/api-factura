@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
+use App\Models\Provider;
 use Illuminate\Http\Request;
 
-class ProductController extends Controller
+class ProviderController extends Controller
 {
-    public function __Construct()
+    public function __construct()
     {
-
+        //mvm
     }
 
     /**
@@ -19,7 +19,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $data = Product::all();
+        $data = Provider::all();
         $response = array(
             'status' => 'success',
             'code' => 200,
@@ -41,12 +41,12 @@ class ProductController extends Controller
         if(!empty($data)){
             $data = array_map('trim', $data);
             $rules = [
-                //'id' => 'numeric',
-                'codigoProducto'=>'required|numeric',
-                'idprovedor' => 'required|numeric',
+                'id' => 'required|numeric',
+                'idEmpleado' => 'required|numeric',
                 'nombre' => 'required|alpha',
-                'cantidad' => 'required|numeric',
-                'precioUnidad' => 'required|numeric'
+                'cedulaJuridica' => 'required|numeric',
+                'direccion' => 'required',
+                'VolumenVentas' => 'required|numeric'
             ];
             $validate = \validator($data, $rules);
             if($validate -> fails()){
@@ -57,36 +57,35 @@ class ProductController extends Controller
                     'errors' => $validate -> errors()
                 );
             }else{
-                $product = new Product();
-                //$product -> id = $data['id']; PREGUNTAR COM INSERTAR EN TABLA AUTOINCREMENTABLE
-                $product -> codigoProducto = $data['codigoProducto'];
-                $product -> idProvedor = $data['idprovedor'];
-                $product -> nombre = $data['nombre'];
-                $product -> cantidad = $data['cantidad'];
-                $product -> fechaCaducidad = $data['fechaCaducidad'];
-                $product -> precioUnidad = $data['precioUnidad'];
-                $product -> save();
+                $provider = new Provider();
+                $provider -> id = $data['id'];
+                $provider -> idEmpleado = $data['idEmpleado'];
+                $provider -> nombre = $data['nombre'];
+                $provider -> cedulaJuridica = $data['cedulaJuridica'];
+                $provider -> direccion = $data['direccion'];
+                $provider -> VolumenVentas = $data['VolumenVentas'];
+                $provider -> save();
                 $response = array(
                     'status' => 'success',
                     'code' => 200,
                     'message' => 'Datos almacenados exitosamente'
                 );
             }
-            return response()->json($response,$response['code']);
         }
+        return response()->json($response,$response['code']);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Product  $product
+     * @param  \App\Models\Provider  $provider
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        //$id = Product::where('codigoProducto',$codigo) -> get($data);
-        $data=Product::find($id);
+        $data=Provider::find($id);
         if(is_object($data)){
+            $data=$data->load('products');
             $response=array(
                 'status'=>'success',
                 'code'=>200,
@@ -106,7 +105,7 @@ class ProductController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Product  $product
+     * @param  \App\Models\Provider  $provider
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
@@ -116,11 +115,12 @@ class ProductController extends Controller
         if(!empty($data)){
             $data = array_map('trim', $data);
             $rules = [
-                'codigoProducto'=>'required|numeric',
-                'idprovedor' => 'required|numeric',
-                'nombre' => 'required|alpha',
-                'cantidad' => 'required|numeric',
-                'precioUnidad' => 'required|numeric'
+                'id' => 'required',
+                'idEmpleado' => 'required',
+                'nombre' => 'required',
+                'cedulaJuridica' => 'required|numeric',
+                'direccion' => 'required',
+                'VolumenVentas' => 'required|numeric'
             ];
             $validate = \validator($data, $rules);
             if($validate -> fails()){
@@ -132,9 +132,10 @@ class ProductController extends Controller
                 );
             }else{
                 $id = $data['id'];
-                unset($data['codigoProducto']);
+                unset($data['id']);
+                //unset($data['idEmpleado']);
                 unset($data['created_at']);
-                $updated = Product::where('id',$id) -> update($data);
+                $updated = Provider::where('id',$id) -> update($data);
                 if($updated > 0){
                     $response = array(
                         'status'=>'success',
@@ -162,13 +163,13 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Product  $product
+     * @param  \App\Models\Provider  $provider
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         if(isset($id)){
-            $deleted = Product::where('id', $id) -> delete();
+            $deleted = Provider::where('id', $id) -> delete();
             if($deleted){
                 $response = array(
                     'status'=>'success',
