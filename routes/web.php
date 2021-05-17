@@ -19,7 +19,7 @@ use App\Http\Controllers\EmployeeController;
 */
 
 Route::prefix('/api')->group(function () {
-    //rutas especificas
+    //rutas especificass
 
     //Rutas automaticas RESTful
     Route::resource('/user',UserController::class,['except'=>['create','edit']]);
