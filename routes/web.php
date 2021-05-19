@@ -20,7 +20,8 @@ use App\Http\Controllers\EmployeeController;
 
 Route::prefix('/api')->group(function () {
     //rutas especificass
-
+    Route::post('/user/login',[UserController::class,'login']);
+    Route::post('/user/getidentity',[UserController::class,'getIdentity']);
     //Rutas automaticas RESTful
     Route::resource('/user',UserController::class,['except'=>['create','edit']]);
     Route::resource('/client',ClientController::class,['except'=>['create','edit']]);
