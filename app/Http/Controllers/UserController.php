@@ -118,7 +118,7 @@ class UserController extends Controller
                  unset($data['idEmpleado']);
                  unset($data['idCliente']);
                  unset($data['create_at']);
-                 $data['password'] = hash('sha256',$data['password']);
+                 $data['password'] = hash('sha256',$data['password']);//se cifra la nueva contraseña
                  $updated=User::where('nombreUsuario',$userName)->update($data);
                  if($updated>0){
                      $response=array(
