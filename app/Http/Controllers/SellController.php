@@ -60,7 +60,6 @@ class SellController extends Controller
             );
         } else {
             $sell = new Sell();
-            $sell -> id = $data['id'];
             $sell -> idCajero = $data['idCajero'];
             $sell -> idDetalleVenta = $data['idDetalleVenta'];
             $sell -> idCliente = $data['idCliente'];
@@ -114,7 +113,14 @@ class SellController extends Controller
         $data = json_decode($json, true);
         if (!empty($data)) {
             $data = array_map('trim', $data);
-            $rules = [];
+            $rules = [
+                'id' => 'required|numeric',
+                'idCajero' => 'required|numeric',
+                'idDetalleVenta' => 'required|numeric',
+                'idCliente' => 'required|numeric',
+                'fecha' => 'required',
+                'total' => 'required|numeric'
+            ];
             $validate = \validator($data, $rules);
             if ($validate->fails()) {
                 $response = array(

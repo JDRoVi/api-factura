@@ -43,7 +43,6 @@ class PurchaseController extends Controller
         $data = json_decode($json, true);
         $data = array_map('trim', $data);
         $rules = [
-            'id' => 'required|numeric',
             'idBodeguero' => 'required|numeric',
             'idDetalleVenta' => 'required|numeric',
             'idProveedor' => 'required|numeric',
@@ -60,7 +59,6 @@ class PurchaseController extends Controller
             );
         } else {
             $purchase = new Purchase();
-            $purchase -> id = $data['id'];
             $purchase -> idBodeguero = $data['idBodeguero'];
             $purchase -> idDetalleVenta = $data['idDetalleVenta'];
             $purchase -> idProveedor = $data['idProveedor'];

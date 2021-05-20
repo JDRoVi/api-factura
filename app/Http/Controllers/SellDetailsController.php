@@ -43,7 +43,6 @@ class SellDetailsController extends Controller
         $data = json_decode($json, true);
         $data = array_map('trim', $data);
         $rules = [
-            'id' => 'required|numeric',
             'idProducto' => 'required|numeric',
             'precioUnidad' => 'required|numeric',
             'cantidad' => 'required|numeric',
@@ -60,7 +59,6 @@ class SellDetailsController extends Controller
             );
         } else {
             $sellDetails = new SellDetails();
-            $sellDetails -> id = $data['id'];
             $sellDetails -> idProducto = $data['idProducto'];
             $sellDetails -> precioUnidad = $data['precioUnidad'];
             $sellDetails -> cantidad = $data['cantidad'];
@@ -115,7 +113,6 @@ class SellDetailsController extends Controller
         if (!empty($data)) {
             $data = array_map('trim', $data);
             $rules = [
-                'id' => 'required|numeric',
                 'idProducto' => 'required|numeric',
                 'precioUnidad' => 'required|numeric',
                 'cantidad' => 'required|numeric',
