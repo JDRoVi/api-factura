@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use PhpParser\NodeVisitor\FirstFindingVisitor;
 
 class ProductController extends Controller
 {
@@ -87,10 +88,10 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($codigo)
     {
-        //$id = Product::where('codigoProducto',$codigo) -> get($data);
-        $data=Product::find($id);
+        //$data = Product::where('codigoProducto',$codigo);
+        $data=Product::where('codigoProducto',$codigo)->first();
         if(is_object($data)){
             $response=array(
                 'status'=>'success',
