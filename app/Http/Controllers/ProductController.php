@@ -197,4 +197,45 @@ class ProductController extends Controller
         }
         return response() -> json($response, $response['code']);
     }
+
+    public function uploadImage($response, $response) {
+        $image = $request -> file('file0');
+        $validate = \Validator::make($request -> all, [
+            'file0' => 'required|image|mimes:jpg,jpeg,png'
+        ]);
+        if($validate -> fails()) {
+            $response = array(
+                'status' => 'error',
+                'code' => 406,
+                'message' => 'Error al subir la imagen',
+                'errors' => $validate -> errors()
+            );
+        } else {
+            $image_name = time().$image -> getClientOriginalName();
+            \Storage::disk('producto')-> put($image_name, \File::get($image));
+            $response = array(
+                'status'=>'success',
+                'code'=>200,
+                'message' => 'Imagen guardada correctamente',
+                'image' => $image_name
+            );
+        }
+        return response() -> json($response, $response['code']); 
+    }
+
+    public function getImage($filename) {
+        echo($filename);
+        $exist = \Storage::disk('producto') -> exists($filename);
+        if($exist) {
+            $file = \Storage::disk('producto') -> get($filename);
+            return new Response($file, 200);
+        } else {
+            $response = array(
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Imagen no encontrada'
+            );
+            return response() -> json($response, $response['code']); 
+        }
+    }
 }

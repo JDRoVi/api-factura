@@ -43,8 +43,6 @@ class PurchaseDetailsController extends Controller
         $data = json_decode($json, true);
         $data = array_map('trim', $data);
         $rules = [
-            'id' => 'required|numeric',
-            'idProducto' => 'required|numeric',
             'precioUnidad' => 'required|numeric',
             'cantidad' => 'required|numeric',
             'subtotal' => 'required|numeric'
@@ -59,7 +57,6 @@ class PurchaseDetailsController extends Controller
             );
         } else {
             $purchaseDetails = new PurchaseDetails();
-            $purchaseDetails -> id = $data['id'];
             $purchaseDetails -> idProducto = $data['idProducto'];
             $purchaseDetails -> precioUnidad = $data['precioUnidad'];
             $purchaseDetails -> cantidad = $data['cantidad'];
