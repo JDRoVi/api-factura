@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use PhpParser\NodeVisitor\FirstFindingVisitor;
 
 class ProductController extends Controller
 {
@@ -41,12 +42,12 @@ class ProductController extends Controller
         if(!empty($data)){
             $data = array_map('trim', $data);
             $rules = [
-                //'id' => 'numeric',
-                'codigoProducto'=>'required|numeric',
+                'codigoProducto'=>'required|unique:producto',
                 'idprovedor' => 'required|numeric',
                 'nombre' => 'required|alpha',
                 'cantidad' => 'required|numeric',
-                'precioUnidad' => 'required|numeric'
+                'fechaCaducidad' => 'required',
+                'precioUnidad' => 'required'
             ];
             $validate = \validator($data, $rules);
             if($validate -> fails()){
@@ -58,9 +59,8 @@ class ProductController extends Controller
                 );
             }else{
                 $product = new Product();
-                //$product -> id = $data['id']; PREGUNTAR COM INSERTAR EN TABLA AUTOINCREMENTABLE
                 $product -> codigoProducto = $data['codigoProducto'];
-                $product -> idProvedor = $data['idprovedor'];
+                $product -> idprovedor = $data['idprovedor'];
                 $product -> nombre = $data['nombre'];
                 $product -> cantidad = $data['cantidad'];
                 $product -> fechaCaducidad = $data['fechaCaducidad'];
@@ -72,8 +72,14 @@ class ProductController extends Controller
                     'message' => 'Datos almacenados exitosamente'
                 );
             }
-            return response()->json($response,$response['code']);
+        }else{
+            $response = array(
+                'status' => 'NOT FOUND',
+                'code' => 404,
+                'message' => 'Datos no encontrados'
+            );
         }
+        return response()->json($response,$response['code']);
     }
 
     /**
@@ -82,10 +88,10 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($codigo)
     {
-        //$id = Product::where('codigoProducto',$codigo) -> get($data);
-        $data=Product::find($id);
+        //$data = Product::where('codigoProducto',$codigo);
+        $data=Product::where('codigoProducto',$codigo)->first();
         if(is_object($data)){
             $response=array(
                 'status'=>'success',
@@ -106,21 +112,20 @@ class ProductController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
     {
         $json = $request -> input('json', null);
-        $data = json_decode($json, true);
+        $data = json_decode($json,true);
         if(!empty($data)){
             $data = array_map('trim', $data);
             $rules = [
-                'codigoProducto'=>'required|numeric',
-                'idprovedor' => 'required|numeric',
+                'idprovedor' => 'required',
                 'nombre' => 'required|alpha',
                 'cantidad' => 'required|numeric',
-                'precioUnidad' => 'required|numeric'
+                'fechaCaducidad' => 'required',
+                'precioUnidad' => 'required'
             ];
             $validate = \validator($data, $rules);
             if($validate -> fails()){
@@ -131,10 +136,11 @@ class ProductController extends Controller
                     'errors' => $validate -> errors()
                 );
             }else{
-                $id = $data['id'];
+                $codigo = $data['codigoProducto'];
+                unset($data['id']);
                 unset($data['codigoProducto']);
                 unset($data['created_at']);
-                $updated = Product::where('id',$id) -> update($data);
+                $updated = Product::where('codigoProducto',$codigo) -> update($data);
                 if($updated > 0){
                     $response = array(
                         'status'=>'success',
