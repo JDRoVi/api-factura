@@ -9,5 +9,9 @@ class Product extends Model
 {
     use HasFactory;
     protected $table = 'producto';
-    protected $fillable = ['codigoProducto','nombre','cantidad','fechaCaducidad','precioUnidad'];
+    protected $fillable = ['codigoProducto','idprovedor','nombre','cantidad','fechaCaducidad','precioUnidad'];
+
+    public function Provider(){
+        return $this->belongsTo('App\Models\Provider','idprovedor');
+    }
 }
