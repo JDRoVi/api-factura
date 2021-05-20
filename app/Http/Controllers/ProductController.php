@@ -198,7 +198,7 @@ class ProductController extends Controller
         return response() -> json($response, $response['code']);
     }
 
-    public function uploadImage($response, $response) {
+    public function uploadImage(Request $request) {
         $image = $request -> file('file0');
         $validate = \Validator::make($request -> all, [
             'file0' => 'required|image|mimes:jpg,jpeg,png'
