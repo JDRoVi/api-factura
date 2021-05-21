@@ -9,6 +9,5 @@ class PurchaseDetails extends Model
 {
     use HasFactory;
     protected $table='detallecompra';
-    protected $fillable = [];
-    public function PurchaseDetails(){}
+    protected $fillable = ['codigoProducto','idcompra','precioUnidad','cantidad','subtotal'];
 }

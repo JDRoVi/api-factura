@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PurchaseDetails;
 use Illuminate\Http\Request;
+use App\Models\Product;
 
 class PurchaseDetailsController extends Controller
 {
@@ -41,11 +42,11 @@ class PurchaseDetailsController extends Controller
     {
         $json = $request->input('json', null);
         $data = json_decode($json, true);
+        if(!empty($data)){
         $data = array_map('trim', $data);
         $rules = [
-            'precioUnidad' => 'required|numeric',
+            //'precioUnidad' => 'required|numeric',
             'cantidad' => 'required|numeric',
-            'subtotal' => 'required|numeric'
         ];
         $valid = \validator($data, $rules);
         if ($valid->fails()) {
@@ -56,18 +57,27 @@ class PurchaseDetailsController extends Controller
                 'errors' => $valid->errors()
             );
         } else {
-            $purchaseDetails = new PurchaseDetails();
-            $purchaseDetails -> idProducto = $data['idProducto'];
-            $purchaseDetails -> precioUnidad = $data['precioUnidad'];
-            $purchaseDetails -> cantidad = $data['cantidad'];
-            $purchaseDetails -> subtotal = $data['subtotal'];
-            $purchaseDetails -> save();
+            $purch = Product::where('codigoProducto',$data['codigoProducto'])->first();
+            $PurchaseDetails = new PurchaseDetails();
+            $PurchaseDetails -> codigoProducto = $data['codigoProducto'];
+            $PurchaseDetails -> idCompra = $data['idCompra'];
+            $PurchaseDetails -> precioUnidad = $purch['precioUnidad'];
+            $PurchaseDetails -> cantidad = $data['cantidad'];
+            $PurchaseDetails -> subtotal = $data['cantidad'] * $purch['precioUnidad'];
+            $PurchaseDetails -> save();
             $response = array(
                 'status' => 'success',
                 'code' => 200,
                 'message' => 'Datos almacenados satisfactoriamente'
             );
         }
+    }else{
+        $response = array(
+            'status' => 'NOT FOUND',
+            'code' => 404,
+            'message' => 'Datos no encontrados'
+        );
+    }
         return response()->json($response, $response['code']);
     }
 
@@ -77,9 +87,9 @@ class PurchaseDetailsController extends Controller
      * @param  \App\Models\PurchaseDetails  $purchaseDetails
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($CodigoVenta)
     {
-        $data = PurchaseDetails::find($id);
+        $data = PurchaseDetails::where('idCompra', $CodigoVenta)->get();
         if (is_object($data)) {
             $response = array(
                 'status' => 'success',
@@ -96,86 +106,5 @@ class PurchaseDetailsController extends Controller
         return response()->json($response,$response['code']);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\PurchaseDetails  $purchaseDetails
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request)
-    {
-        $json = $request->input('json', null);
-        $data = json_decode($json, true);
-        if (!empty($data)) {
-            $data = array_map('trim', $data);
-            $rules = [];
-            $validate = \validator($data, $rules);
-            if ($validate->fails()) {
-                $response = array(
-                    'status' => 'error',
-                    'code' => 406,
-                    'message' => 'Los datos enviados son incorrectos',
-                    'errors' => $validate->errors()
-                );
-            } else {
-                $id=$data['id'];
-                unset($data['id']);
-                unset($data['created_at']);
-                $updated = PurchaseDetails::where('id', $id)->update($data);
-                if ($updated > 0) {
-                    $response = array(
-                        'status' => 'success',
-                        'code' => 200,
-                        'message' => 'Datos actualizados exitosamente'
-                    );
-                } else {
-                    $response = array(
-                        'status' => 'error',
-                        'code' => 400,
-                        'message' => 'No se pudo actualizar los datos'
-                    );
-                }
-            }
-        } else {
-            $response = array(
-                'status' => 'error',
-                'code' => 400,
-                'message' => 'Faltan Datos'
-            );
-        }
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\PurchaseDetails  $purchaseDetails
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        if (isset($id)) {
-            $deleted = PurchaseDetails::where('id', $id)->delete();
-            if ($deleted) {
-                $response = array(
-                    'status' => 'success',
-                    'code' => 200,
-                    'message' => 'Eliminado correctamente'
-                );
-            } else {
-                $response = array(
-                    'status' => 'error',
-                    'code' => 400,
-                    'message' => 'Problemas al eleminar el recurso, puede ser que el recurso no exista'
-                );
-            }
-        } else {
-            $response = array(
-                'status' => 'error',
-                'code' => 400,
-                'message' => 'Falta el identificador del recurso'
-            );
-        }
-        return response()->json($response, $response['code']);
-    }
 }

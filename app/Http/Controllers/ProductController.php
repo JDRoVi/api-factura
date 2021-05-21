@@ -90,7 +90,6 @@ class ProductController extends Controller
      */
     public function show($codigo)
     {
-        //$data = Product::where('codigoProducto',$codigo);
         $data=Product::where('codigoProducto',$codigo)->first();
         if(is_object($data)){
             $response=array(
