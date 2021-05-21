@@ -10,5 +10,7 @@ class Sell extends Model
     use HasFactory;
     protected $table='venta';
     protected $fillable = ['idCajero','idCliente','idDetalleVenta','fecha','total'];
-    public function Sell(){}
+    public function detail(){
+        return $this->hasMany('App\Models\SellDetails','idDetalleVenta');
+    }
 }
