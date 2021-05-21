@@ -43,35 +43,34 @@ class PurchaseDetailsController extends Controller
         $json = $request->input('json', null);
         $data = json_decode($json, true);
         if(!empty($data)){
-            $data = array_map('trim', $data);
-            $rules = [
-                //'precioUnidad' => 'required|numeric',
-                'cantidad' => 'required|numeric',
-            ];
-            $valid = \validator($data, $rules);
-            if ($valid->fails()) {
-                $response = array(
-                    'status' => 'error',
-                    'code' => 406,
-                    'message' => 'Los datos son incorrectos',
-                    'errors' => $valid->errors()
-                );
-            } else {
-                $purch = Product::where('codigoProducto',$data['codigoProducto'])->first();
-                $PurchaseDetails = new PurchaseDetails();
-                $PurchaseDetails -> codigoProducto = $data['codigoProducto'];
-                $PurchaseDetails -> idCompra = $data['idCompra'];
-                $PurchaseDetails -> precioUnidad = $purch['precioUnidad'];
-                $PurchaseDetails -> cantidad = $data['cantidad'];
-                $PurchaseDetails -> subtotal = $data['cantidad'] * $purch['precioUnidad'];
-                $PurchaseDetails -> save();
-                $response = array(
-                    'status' => 'success',
-                    'code' => 200,
-                    'message' => 'Datos almacenados satisfactoriamente'
-                );
-            }
-        }else{
+        $data = array_map('trim', $data);
+        $rules = [
+            'cantidad' => 'required|numeric',
+        ];
+        $valid = \validator($data, $rules);
+        if ($valid->fails()) {
+            $response = array(
+                'status' => 'error',
+                'code' => 406,
+                'message' => 'Los datos son incorrectos',
+                'errors' => $valid->errors()
+            );
+        } else {
+            $purch = Product::where('codigoProducto',$data['codigoProducto'])->first();
+            $PurchaseDetails = new PurchaseDetails();
+            $PurchaseDetails -> codigoProducto = $data['codigoProducto'];
+            $PurchaseDetails -> idCompra = $data['idCompra'];
+            $PurchaseDetails -> precioUnidad = $purch['precioUnidad'];
+            $PurchaseDetails -> cantidad = $data['cantidad'];
+            $PurchaseDetails -> subtotal = $data['cantidad'] * $purch['precioUnidad'];
+            $PurchaseDetails -> save();
+            $response = array(
+                'status' => 'success',
+                'code' => 200,
+                'message' => 'Datos almacenados satisfactoriamente'
+            );
+        }
+    }else{
         $response = array(
             'status' => 'NOT FOUND',
             'code' => 404,
@@ -91,6 +90,7 @@ class PurchaseDetailsController extends Controller
     {
         $data = PurchaseDetails::where('idCompra', $CodigoVenta)->get();
         if (is_object($data)) {
+            $data = $data->load('purch');
             $response = array(
                 'status' => 'success',
                 'code' => 200,

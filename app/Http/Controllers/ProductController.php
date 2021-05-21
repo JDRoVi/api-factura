@@ -92,6 +92,7 @@ class ProductController extends Controller
     {
         $data=Product::where('codigoProducto',$codigo)->first();
         if(is_object($data)){
+            $data = $data->load('Provider');
             $response=array(
                 'status'=>'success',
                 'code'=>200,

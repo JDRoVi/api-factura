@@ -9,5 +9,8 @@ class PurchaseDetails extends Model
 {
     use HasFactory;
     protected $table='detallecompra';
-    protected $fillable = ['codigoProducto','idcompra','precioUnidad','cantidad','subtotal'];
+    protected $fillable = ['codigoProducto','idCompra','precioUnidad','cantidad','subtotal'];
+    public function purch(){
+        return $this->belongsTo('App\Models\Purchase','idCompra');
+    }
 }
