@@ -41,35 +41,44 @@ class SellController extends Controller
     {
         $json = $request->input('json', null);
         $data = json_decode($json, true);
-        $data = array_map('trim', $data);
-        $rules = [
-            'id' => 'required|numeric',
-            'idCajero' => 'required|numeric',
-            'idDetalleVenta' => 'required|numeric',
-            'idCliente' => 'required|numeric',
-            'fecha' => 'required',
-            'total' => 'required|numeric'
-        ];
-        $valid = \validator($data, $rules);
-        if ($valid->fails()) {
-            $response = array(
-                'status' => 'error',
-                'code' => 406,
-                'message' => 'Los datos son incorrectos',
-                'errors' => $valid->errors()
-            );
+        if(!empty($data)) {
+            $data = array_map('trim', $data);
+            $rules = [
+                'id' => 'required|numeric',
+                'idCajero' => 'required|numeric',
+                'idDetalleVenta' => 'required|numeric',
+                'idCliente' => 'required|numeric',
+                'fecha' => 'required',
+                'total' => 'required|numeric'
+            ];
+            $valid = \validator($data, $rules);
+            if ($valid->fails()) {
+                $response = array(
+                    'status' => 'error',
+                    'code' => 406,
+                    'message' => 'Los datos son incorrectos',
+                    'errors' => $valid->errors()
+                );
+            } else {
+                $sells = Product::where('codigoProducto',$data['codigoProducto'])->first();
+                $sell = new Sell();
+                $sell -> idCajero = $data['idCajero'];
+                $sell -> idCliente = $data['idCliente'];
+                $sell -> idDetalleVenta = $data['idDetalleVenta'];
+                $sell -> fecha = $data['fecha'];
+                $sell -> total = $sells['total'];
+                $sell -> save();
+                $response = array(
+                    'status' => 'success',
+                    'code' => 200,
+                    'message' => 'Datos almacenados satisfactoriamente'
+                );
+            }
         } else {
-            $sell = new Sell();
-            $sell -> idCajero = $data['idCajero'];
-            $sell -> idDetalleVenta = $data['idDetalleVenta'];
-            $sell -> idCliente = $data['idCliente'];
-            $sell -> fecha = $data['fecha'];
-            $sell -> total = $data['total'];
-            $sell -> save();
             $response = array(
-                'status' => 'success',
-                'code' => 200,
-                'message' => 'Datos almacenados satisfactoriamente'
+                'status' => 'NOT FOUND',
+                'code' => 404,
+                'message' => 'Datos no encontrados'
             );
         }
         return response()->json($response, $response['code']);
@@ -189,4 +198,6 @@ class SellController extends Controller
         }
         return response()->json($response, $response['code']);
     }
+
+    
 }

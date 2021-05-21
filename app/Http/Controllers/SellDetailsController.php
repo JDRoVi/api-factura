@@ -41,34 +41,42 @@ class SellDetailsController extends Controller
     {
         $json = $request->input('json', null);
         $data = json_decode($json, true);
-        $data = array_map('trim', $data);
-        $rules = [
-            'idProducto' => 'required|numeric',
-            'precioUnidad' => 'required|numeric',
-            'cantidad' => 'required|numeric',
-            'subtotal' => 'required|numeric',
-            'descuento' => 'required|numeric'
-        ];
-        $valid = \validator($data, $rules);
-        if ($valid->fails()) {
-            $response = array(
-                'status' => 'error',
-                'code' => 406,
-                'message' => 'Los datos son incorrectos',
-                'errors' => $valid->errors()
-            );
+        if(!empty($data)) {
+            $data = array_map('trim', $data);
+            $rules = [
+                'codProducto' => 'required|numeric',
+                'idVenta' => 'required|numeric',
+                'cantidad' => 'required|numeric',
+            ];
+            $valid = \validator($data, $rules);
+            if ($valid->fails()) {
+                $response = array(
+                    'status' => 'error',
+                    'code' => 406,
+                    'message' => 'Los datos son incorrectos',
+                    'errors' => $valid->errors()
+                );
+            } else {
+                $sells = Product::where('codigoProducto',$data['codigoProducto'])->first();
+                $sellDetails = new SellDetails();
+                $sellDetails -> codProducto = $data['codProducto'];
+                $sellDetails -> idVenta = $data['idVenta'];
+                $sellDetails -> precioUnidad = $sells['precioUnidad'];
+                $sellDetails -> cantidad = $data['cantidad'];
+                $sellDetails -> subtotal = $sells['subtotal'] * $sells['precioUnidad'];
+                $sellDetails -> descuento = $data['descuento'];
+                $sellDetails -> save();
+                $response = array(
+                    'status' => 'success',
+                    'code' => 200,
+                    'message' => 'Datos almacenados satisfactoriamente'
+                );
+            }
         } else {
-            $sellDetails = new SellDetails();
-            $sellDetails -> idProducto = $data['idProducto'];
-            $sellDetails -> precioUnidad = $data['precioUnidad'];
-            $sellDetails -> cantidad = $data['cantidad'];
-            $sellDetails -> subtotal = $data['subtotal'];
-            $sellDetails -> descuento = $data['descuento'];
-            $sellDetails -> save();
             $response = array(
-                'status' => 'success',
-                'code' => 200,
-                'message' => 'Datos almacenados satisfactoriamente'
+                'status' => 'NOT FOUND',
+                'code' => 404,
+                'message' => 'Datos no encontrados'
             );
         }
         return response()->json($response, $response['code']);
@@ -82,7 +90,7 @@ class SellDetailsController extends Controller
      */
     public function show($id)
     {
-        $data = SellDetails::find($id);
+        $data = SellDetails::where('idVenta', $codProducto)->get();
         if (is_object($data)) {
             $response = array(
                 'status' => 'success',
@@ -97,95 +105,5 @@ class SellDetailsController extends Controller
             );
         }
         return response()->json($response,$response['code']);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\SellDetails  $sellDetails
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request)
-    {
-        $json = $request->input('json', null);
-        $data = json_decode($json, true);
-        if (!empty($data)) {
-            $data = array_map('trim', $data);
-            $rules = [
-                'idProducto' => 'required|numeric',
-                'precioUnidad' => 'required|numeric',
-                'cantidad' => 'required|numeric',
-                'subtotal' => 'required|numeric',
-                'descuento' => 'required|numeric'
-            ];
-            $validate = \validator($data, $rules);
-            if ($validate->fails()) {
-                $response = array(
-                    'status' => 'error',
-                    'code' => 406,
-                    'message' => 'Los datos enviados son incorrectos',
-                    'errors' => $validate->errors()
-                );
-            } else {
-                $id=$data['id'];
-                unset($data['id']);
-                unset($data['created_at']);
-                $updated = SellDetails::where('id', $id)->update($data);
-                if ($updated > 0) {
-                    $response = array(
-                        'status' => 'success',
-                        'code' => 200,
-                        'message' => 'Datos actualizados exitosamente'
-                    );
-                } else {
-                    $response = array(
-                        'status' => 'error',
-                        'code' => 400,
-                        'message' => 'No se pudo actualizar los datos'
-                    );
-                }
-            }
-        } else {
-            $response = array(
-                'status' => 'error',
-                'code' => 400,
-                'message' => 'Faltan Datos'
-            );
-        }
-        return response()->json($response,$response['code']);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\SellDetails  $sellDetails
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        if (isset($id)) {
-            $deleted = SellDetails::where('id', $id)->delete();
-            if ($deleted) {
-                $response = array(
-                    'status' => 'success',
-                    'code' => 200,
-                    'message' => 'Eliminado correctamente'
-                );
-            } else {
-                $response = array(
-                    'status' => 'error',
-                    'code' => 400,
-                    'message' => 'Problemas al eleminar el recurso, puede ser que el recurso no exista'
-                );
-            }
-        } else {
-            $response = array(
-                'status' => 'error',
-                'code' => 400,
-                'message' => 'Falta el identificador del recurso'
-            );
-        }
-        return response()->json($response, $response['code']);
     }
 }

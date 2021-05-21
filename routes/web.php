@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PurchaseDetailsController;
+use App\Http\Controllers\SellDetailsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,4 +31,5 @@ Route::prefix('/api')->group(function () {
     Route::resource('/provider',ProviderController::class,['except'=>['create','edit']]);
     Route::resource('/employee',EmployeeController::class,['except'=>['create','edit']]);
     Route::resource('/PurchaseDetails',PurchaseDetailsController::class,['except'=>['create','edit']]);
+    Route::resource('/SellDetails',PurchaseDetailsController::class,['except'=>['create','edit']]);
 });
