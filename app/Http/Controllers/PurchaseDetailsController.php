@@ -45,7 +45,6 @@ class PurchaseDetailsController extends Controller
         if(!empty($data)){
         $data = array_map('trim', $data);
         $rules = [
-            //'precioUnidad' => 'required|numeric',
             'cantidad' => 'required|numeric',
         ];
         $valid = \validator($data, $rules);

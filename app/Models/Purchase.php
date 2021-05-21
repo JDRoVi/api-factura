@@ -9,6 +9,5 @@ class Purchase extends Model
 {
     use HasFactory;
     protected $table='compra';
-    protected $fillable = [];
-    public function Purchase(){}
+    protected $fillable = ['idBodeguero','idProveedor','idDetalle','fecha','total'];
 }
