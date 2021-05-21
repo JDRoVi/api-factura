@@ -83,18 +83,19 @@ class PurchaseController extends Controller
      */
     public function show($idPurch)
     {
-        $data = Purchase::where('idDetalle', $idPurch)->get();
-        if (is_object($data)) {
-            $response = array(
-                'status' => 'success',
-                'code' => 200,
-                'data' => $data
+        $data = Purchase::where('idDetalle', $idPurch)->first();
+        if(is_object($data)){
+            $data=$data->load('detail');
+            $response=array(
+                'status'=>'success',
+                'code'=>200,
+                'data'=>$data
             );
-        } else {
-            $response = array(
-                'status' => 'error',
-                'code' => 404,
-                'message' => 'Recurso no encontrado'
+        }else{
+            $response=array(
+                'status'=>'error',
+                'code'=>404,
+                'message'=>'Recurso no encontrado'
             );
         }
         return response()->json($response,$response['code']);

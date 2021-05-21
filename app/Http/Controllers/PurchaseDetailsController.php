@@ -90,6 +90,7 @@ class PurchaseDetailsController extends Controller
     {
         $data = PurchaseDetails::where('idCompra', $CodigoVenta)->get();
         if (is_object($data)) {
+            $data = $data->load('purch');
             $response = array(
                 'status' => 'success',
                 'code' => 200,
