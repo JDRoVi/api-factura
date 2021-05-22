@@ -19,7 +19,7 @@ class ApiAuthMiddleware
     {
         $jwtAuth = new JwtAuth();
         $token = $request->header('token');
-        $logged = $jwtAuth->verify($token);
+        $logged = $jwtAuth->verify($token,true);
         if($logged){
             return $next($request);
         }else{

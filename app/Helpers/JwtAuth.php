@@ -20,9 +20,8 @@ class JwtAuth{
                 'sub' =>$user->id,
                 'nombreUsuario'=> $user->nombreUsuario,
                 'nivelUsuario'=>$user->nivelUsuario,
-               // 'image'=>$user->image,
                 'iat'=>time(),
-                'exp'=>time()+120
+                'exp'=>time()+600
             );
             $data=JWT::encode($token,$this->key,'HS256');
         }else{
