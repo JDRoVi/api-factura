@@ -8,11 +8,6 @@ use PhpParser\NodeVisitor\FirstFindingVisitor;
 
 class ProductController extends Controller
 {
-    public function __Construct()
-    {
-
-    }
-
     /**
      * Display a listing of the resource.
      *

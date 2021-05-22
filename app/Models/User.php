@@ -22,7 +22,6 @@ class User extends Authenticatable
         'password',
         'idEmpleado',
         'nivelUsuario',
-        
     ];
 
     /**
@@ -43,10 +42,6 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    public function Client(){
-        //return $this->belongsTo('App\Models\Employee');
-        return $this->belongsTo('App\Models\Client','idCliente');
-    }
 
     public function Emply(){
         return $this->belongsTo('App\Models\Employee','idEmpleado');

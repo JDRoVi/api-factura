@@ -11,9 +11,9 @@ class Employee extends Model
     protected $table='empleado';
     protected $fillable=['id','nombre','apellido','direccion','telefono','correo','tipo'];
 
-    /*public function user(){
+    public function user(){
         return $this->belongsTo('App\Models\User','idEmpleado');
-    }*/
+    }
     public function company(){
         return $this->belongsTo('App\Models\Provider','idEmpleado');
     }
