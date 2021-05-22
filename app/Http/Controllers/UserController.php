@@ -80,7 +80,8 @@ class UserController extends Controller
                         'code' => 200,
                         'message' => 'Datos almacenados exitosamente'
                     );
-        }else{
+             }
+        } else {
             $response = array(
                 'status' => 'NOT FOUND',
                 'code' => 404,
