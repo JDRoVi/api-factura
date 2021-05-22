@@ -47,7 +47,6 @@ class PurchaseController extends Controller
             'idBodeguero' => 'required|numeric',
             'idDetalle' => 'required',
             'idProveedor' => 'required|numeric',
-            'fecha' => 'required',
         ];
         $valid = \validator($data, $rules);
         if ($valid->fails()) {
@@ -58,19 +57,23 @@ class PurchaseController extends Controller
                 'errors' => $valid->errors()
             );
         } else {
-            $Details = PurchaseDetails::where('idCompra',$data['idDetalle'])->sum('subtotal');
-            $purchase = new Purchase();
-            $purchase -> idBodeguero = $data['idBodeguero'];
-            $purchase -> idDetalle = $data['idDetalle'];
-            $purchase -> idProveedor = $data['idProveedor'];
-            $purchase -> fecha = $data['fecha'];
-            $purchase -> total = $Details;
-            $purchase -> save();
-            $response = array(
-                'status' => 'success',
-                'code' => 200,
-                'message' => 'Datos almacenados satisfactoriamente'
-            );
+            unset($data['fecha']);
+            $data['total'] = PurchaseDetails::where('idCompra',$data['idDetalle'])->get()->sum('subtotal');
+            $Save = Purchase::where('idDetalle',$data['idDetalle']) -> update($data);
+            if($Save > 0){
+                $response = array(
+                    'status'=>'success',
+                    'code'=>200,
+                    'message' => 'Datos ingresados correctamente',
+                    'data' => $data
+                );
+            }else{
+                $response = array(
+                    'status'=>'error',
+                    'code'=>400,
+                    'message'=>'No se pudo ingreasar los datos'
+                );
+            }
         }
         return response()->json($response, $response['code']);
     }

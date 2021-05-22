@@ -11,7 +11,7 @@ class UserController extends Controller
 {
     public function __construct()
     {
-       $this->middleware('api.auth',['except'=>['login'/*,'getImage*/]]);
+      $this->middleware('api.auth',['except'=>['login']]);
     }
 
     public function __invoke(){
@@ -59,8 +59,6 @@ class UserController extends Controller
             $rules = [
                 'nombreUsuario' => 'required|unique:Usuario',
                 'password' => 'required',
-                //'idEmpleado' => '',
-                //'idCliente' => '',
                 'nivelUsuario' => 'required'
             ];
             $valid = \validator($data, $rules);
@@ -72,19 +70,17 @@ class UserController extends Controller
                     'errors' => $valid->errors()
                 );
             } else { //sin fallos y se procede a agregar
-                $user = new User();
-                $user->idEmpleado = $data['idEmpleado'];
-                //$user->idCliente = $data['idCliente'];
-                $user->nombreUsuario = $data['nombreUsuario'];
-                $user->nivelUsuario = $data['nivelUsuario'];
-                $user->password = hash('sha256', $data['password']);
-                $user->save();
-                $response = array(
-                    'status' => 'success',
-                    'code' => 200,
-                    'message' => 'Datos almacenados exitosamente'
-                );
-            }
+                    $user = new User();
+                    $user->idEmpleado = $data['idEmpleado'];
+                    $user->nombreUsuario = $data['nombreUsuario'];
+                    $user->nivelUsuario = $data['nivelUsuario'];
+                    $user->password = hash('sha256', $data['password']);
+                    $user->save();
+                    $response = array(
+                        'status' => 'success',
+                        'code' => 200,
+                        'message' => 'Datos almacenados exitosamente'
+                    );
         }else{
             $response = array(
                 'status' => 'NOT FOUND',
