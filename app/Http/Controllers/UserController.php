@@ -11,7 +11,7 @@ class UserController extends Controller
 {
     public function __construct()
     {
-      $this->middleware('api.auth',['except'=>['login']]);
+      $this->middleware('api.auth',['except'=>['login','store']]);
     }
 
     public function __invoke(){
@@ -202,6 +202,47 @@ class UserController extends Controller
         $token = $request->header('token');
         $response = $jwtAuth->verify($token,true);
         return response()->json($response);
+    }
+
+    public function uploadImage(Request $request)
+    {
+        $image = $request->file('file0');
+        $validate=\Validator::make($request->all(),[
+        'file0'=>'required|image|mimes|:jpg,jpeg,png']);
+        if($validate->fails()){
+            $response = array(
+                'status'=>'error',
+                'code'=>406,
+                'message'=>'Error al subir la imagen',
+                'errors'=>$validate->errors()
+            );
+        }else(
+            $image_name = time().$image->getClientOriginalName();
+            \Storage::disk('usuario')->put($image_name,\File::get($image));
+            $response = array(
+                'status'=>'success',
+                'code'=>200,
+                'message'=>'Imagen almacenada exitosamente',
+                'image'=>$image_name
+            );
+        )
+        return response()->json($response,$response['code']);
+    }
+
+    public function getImage($filename)
+    {
+        echo($filename);
+        $exist=\storage::disk('usuario')->exists($filename);
+        if($exist){
+            $file = \Storage::disk('usuario')->get($filename);
+            return new Response($file,2000);
+        }else{
+            $response=array(
+                'status'=>'error',
+                'code'=>404,
+                'message'=>'Recurso/imagen no existe'
+            );
+        }
     }
 
 }
