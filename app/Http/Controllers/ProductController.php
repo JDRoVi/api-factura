@@ -205,7 +205,7 @@ class ProductController extends Controller
                 'message'=>'Error al subir la imagen',
                 'errors'=>$validate->errors()
             );
-        }else(
+        }else{
             $image_name = time().$image->getClientOriginalName();
             \Storage::disk('producto')->put($image_name,\File::get($image));
             $response = array(
@@ -214,7 +214,7 @@ class ProductController extends Controller
                 'message'=>'Imagen almacenada exitosamente',
                 'image'=>$image_name
             );
-        )
+        }
         return response()->json($response,$response['code']);
     }
 
