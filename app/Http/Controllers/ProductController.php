@@ -37,7 +37,7 @@ class ProductController extends Controller
         if(!empty($data)){
             $data = array_map('trim', $data);
             $rules = [
-                'codigoProducto'=>'required|unique:producto',
+                'CodigoProducto'=>'required|unique:producto',
                 'idprovedor' => 'required|numeric',
                 'nombre' => 'required|alpha',
                 'cantidad' => 'required|numeric',
@@ -54,7 +54,7 @@ class ProductController extends Controller
                 );
             }else{
                 $product = new Product();
-                $product -> codigoProducto = $data['codigoProducto'];
+                $product -> CodigoProducto = $data['CodigoProducto'];
                 $product -> idprovedor = $data['idprovedor'];
                 $product -> nombre = $data['nombre'];
                 $product -> cantidad = $data['cantidad'];
@@ -85,7 +85,7 @@ class ProductController extends Controller
      */
     public function show($codigo)
     {
-        $data=Product::where('codigoProducto',$codigo)->first();
+        $data=Product::where('CodigoProducto',$CodigoProducto)->first();
         if(is_object($data)){
             $data = $data->load('Provider');
             $response=array(
@@ -131,11 +131,11 @@ class ProductController extends Controller
                     'errors' => $validate -> errors()
                 );
             }else{
-                $codigo = $data['codigoProducto'];
+                $codigo = $data['CodigoProducto'];
                 unset($data['id']);
-                unset($data['codigoProducto']);
+                unset($data['CodigoProducto']);
                 unset($data['created_at']);
-                $updated = Product::where('codigoProducto',$codigo) -> update($data);
+                $updated = Product::where('CodigoProducto',$codigo) -> update($data);
                 if($updated > 0){
                     $response = array(
                         'status'=>'success',

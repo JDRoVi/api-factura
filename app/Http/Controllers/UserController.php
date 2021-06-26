@@ -70,7 +70,6 @@ class UserController extends Controller
                 );
             } else { //sin fallos y se procede a agregar
                     $user = new User();
-                    $user->idEmpleado = $data['idEmpleado'];
                     $user->nombreUsuario = $data['nombreUsuario'];
                     $user->nivelUsuario = $data['nivelUsuario'];
                     $user->password = hash('sha256', $data['password']);
@@ -111,7 +110,6 @@ class UserController extends Controller
             } else {
                 $userName = $data['nombreUsuario'];
                  unset($data['id']);
-                 unset($data['idEmpleado']);
                  unset($data['idCliente']);
                  unset($data['create_at']);
                  $data['password'] = hash('sha256',$data['password']);//se cifra la nueva contraseña

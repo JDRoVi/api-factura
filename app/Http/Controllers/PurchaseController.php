@@ -45,7 +45,7 @@ class PurchaseController extends Controller
         $data = array_map('trim', $data);
         $rules = [
             'idBodeguero' => 'required|numeric',
-            'idDetalle' => 'required',
+            'idDetalleVenta' => 'required',
             'idProveedor' => 'required|numeric',
         ];
         $valid = \validator($data, $rules);
@@ -58,8 +58,8 @@ class PurchaseController extends Controller
             );
         } else {
             unset($data['fecha']);
-            $data['total'] = PurchaseDetails::where('idCompra',$data['idDetalle'])->get()->sum('subtotal');
-            $Save = Purchase::where('idDetalle',$data['idDetalle']) -> update($data);
+            $data['total'] = PurchaseDetails::where('idCompra',$data['idDetalleVenta'])->get()->sum('subtotal');
+            $Save = Purchase::where('idDetalleVenta',$data['idDetalleVenta']) -> update($data);
             if($Save > 0){
                 $response = array(
                     'status'=>'success',
@@ -86,7 +86,7 @@ class PurchaseController extends Controller
      */
     public function show($idPurch)
     {
-        $data = Purchase::where('idDetalle', $idPurch)->first();
+        $data = Purchase::where('idDetalleVenta', $idPurch)->first();
         if(is_object($data)){
             $data=$data->load('detail');
             $response=array(

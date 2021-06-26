@@ -9,7 +9,7 @@ class SellDetails extends Model
 {
     use HasFactory;
     protected $table='detalleventa';
-    protected $fillable = ['codProducto','idVenta','precioUnidad','cantidad','subtotal','descuento'];
+    protected $fillable = ['idProducto','idVenta','precioUnidad','cantidad','subtotal','descuento'];
     public function sells(){
         return $this->belongsTo('App\Models\Sell','idVenta');
     }

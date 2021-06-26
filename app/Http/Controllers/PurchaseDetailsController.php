@@ -56,9 +56,9 @@ class PurchaseDetailsController extends Controller
                 'errors' => $valid->errors()
             );
         } else {
-            $purch = Product::where('codigoProducto',$data['codigoProducto'])->first();
+            $purch = Product::where('idProducto',$data['idProducto'])->first();
             $PurchaseDetails = new PurchaseDetails();
-            $PurchaseDetails -> codigoProducto = $data['codigoProducto'];
+            $PurchaseDetails -> idProducto = $data['idProducto'];
             $PurchaseDetails -> idCompra = $data['idCompra'];
             $PurchaseDetails -> precioUnidad = $purch['precioUnidad'];
             $PurchaseDetails -> cantidad = $data['cantidad'];
@@ -88,7 +88,7 @@ class PurchaseDetailsController extends Controller
      */
     public function show($CodigoVenta)
     {
-        $data = PurchaseDetails::where('idCompra', $CodigoVenta)->get();
+        $data = PurchaseDetails::where('idCompra', $idProducto)->get();
         if (is_object($data)) {
             $data = $data->load('purch');
             $response = array(

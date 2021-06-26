@@ -45,7 +45,7 @@ class SellDetailsController extends Controller
         if(!empty($data)) {
             $data = array_map('trim', $data);
             $rules = [
-                'codProducto' => 'required|numeric',
+                'idProducto' => 'required|numeric',
                 'idVenta' => 'required|numeric',
                 'cantidad' => 'required|numeric',
             ];
@@ -58,9 +58,9 @@ class SellDetailsController extends Controller
                     'errors' => $valid->errors()
                 );
             } else {
-                $sells = Product::where('codigoProducto',$data['codigoProducto'])->first();
+                $sells = Product::where('idProducto',$data['idProducto'])->first();
                 $sellDetails = new SellDetails();
-                $sellDetails -> codProducto = $data['codProducto'];
+                $sellDetails -> idProducto = $data['idProducto'];
                 $sellDetails -> idVenta = $data['idVenta'];
                 $sellDetails -> precioUnidad = $sells['precioUnidad'];
                 $sellDetails -> cantidad = $data['cantidad'];
@@ -91,7 +91,7 @@ class SellDetailsController extends Controller
      */
     public function show($id)
     {
-        $data = SellDetails::where('idVenta', $codProducto)->get();
+        $data = SellDetails::where('idVenta', $idProducto)->get();
         if (is_object($data)) {
             $response = array(
                 'status' => 'success',

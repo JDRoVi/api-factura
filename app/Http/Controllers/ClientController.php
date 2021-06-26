@@ -62,7 +62,6 @@ class ClientController extends Controller
         $rules =[
             'id' =>'required|numeric',
             'nombre' =>'required|alpha',
-            'apellido'=>'required|alpha',
             'direccion'=>'required',
             'telefono'=>'numeric',
             'correo'=>'required|email|unique:cliente'
@@ -80,7 +79,6 @@ class ClientController extends Controller
             $category = new Client();
             $category->id = $data['id'];
             $category->nombre = $data['nombre'];
-            $category->apellido = $data['apellido'];
             $category->direccion = $data['direccion'];
             $category->telefono = $data['telefono'];
             $category->correo = $data['correo'];
@@ -105,7 +103,6 @@ class ClientController extends Controller
             $rules = [ //se dictan las reglas en cuanto al ingreso de los datos
                 'id'=>'required',
                 'nombre' => 'required|alpha',
-                'apellido' => 'required|alpha',
                 'direccion' => 'required',
                 'telefono' => 'numeric',
                 'correo' => 'required|email'
