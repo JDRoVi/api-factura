@@ -11,7 +11,7 @@ class UserController extends Controller
 {
     public function __construct()
     {
-      $this->middleware('api.auth',['except'=>['login','store']]);
+      $this->middleware('api.auth',['except'=>['login']]);
     }
 
     public function __invoke(){
@@ -56,6 +56,7 @@ class UserController extends Controller
         if (!empty($data)) {
             $data = array_map('trim', $data);
             $rules = [
+                'idEmpleado' => 'required',
                 'nombreUsuario' => 'required|unique:Usuario',
                 'password' => 'required',
                 'nivelUsuario' => 'required'
@@ -70,9 +71,10 @@ class UserController extends Controller
                 );
             } else { //sin fallos y se procede a agregar
                     $user = new User();
+                    $user->idEmpleado = $data['idEmpleado'];
                     $user->nombreUsuario = $data['nombreUsuario'];
-                    $user->nivelUsuario = $data['nivelUsuario'];
                     $user->password = hash('sha256', $data['password']);
+                    $user->nivelUsuario = $data['nivelUsuario'];
                     $user->save();
                     $response = array(
                         'status' => 'success',
@@ -110,6 +112,7 @@ class UserController extends Controller
             } else {
                 $userName = $data['nombreUsuario'];
                  unset($data['id']);
+                 unset($data['idEmpleado']);
                  unset($data['idCliente']);
                  unset($data['create_at']);
                  $data['password'] = hash('sha256',$data['password']);//se cifra la nueva contraseña

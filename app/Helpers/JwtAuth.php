@@ -39,6 +39,7 @@ class JwtAuth{
         $auth=false;
         try{
             $decoded=JWT::decode($token,$this->key,['HS256']);
+            
         }catch(\UnexpectedValueException $ex){
             $auth=false;
         
@@ -49,6 +50,7 @@ class JwtAuth{
             $auth =true;
         }
         if($getIdentity){
+            
             return $decoded;
         }
         return $auth;        

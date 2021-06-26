@@ -18,6 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
+        'idEmpleado',
         'nombreUsuario',
         'password',
         'nivelUsuario',
@@ -32,4 +33,18 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
+
+    public function Emply(){
+        return $this->belongsTo('App\Models\Employee','idEmpleado');
+    }
+
 }
