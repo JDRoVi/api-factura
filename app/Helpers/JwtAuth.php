@@ -34,25 +34,52 @@ class JwtAuth{
         return $data;
     }
 
-    public function verify($token,$getIdentity=false)
-    {
-        $auth=false;
+    public function verify($jwt, $getIdentity = false){
+        $auth = false;
+        $decoded = false;
         try{
-            $decoded=JWT::decode($token,$this->key,['HS256']);
-            
-        }catch(\UnexpectedValueException $ex){
-            $auth=false;
-        
-        }catch(\DomainException $ex){
-            $auth=false;
+            $jwt = str_replace('"', '', $jwt);
+            $decoded = JWT::decode($jwt, $this->key, ['HS256']);
+        }catch(\UnexpectedValueException $e){
+            $auth = false;
+        }catch(\DomainException $e){
+            $auth = false;
         }
-        if(!empty($decoded)&&is_object($decoded)&&isset($decoded->sub)){
-            $auth =true;
+
+        if(!empty($decoded) && is_object($decoded) && isset($decoded->sub)){
+
+            $auth = true;
+        }else{
+            $auth = false;
         }
+
         if($getIdentity){
-            
             return $decoded;
         }
-        return $auth;        
+
+        return $auth;
     }
+
+
+    // public function verify($token,$getIdentity=false)
+    // {
+    //     $auth=false;
+    //     try{
+    //         $decoded=JWT::decode($token,$this->key,['HS256']);
+            
+    //     }catch(\UnexpectedValueException $ex){
+    //         $auth=false;
+        
+    //     }catch(\DomainException $ex){
+    //         $auth=false;
+    //     }
+    //     if(!empty($decoded)&&is_object($decoded)&&isset($decoded->sub)){
+    //         $auth =true;
+    //     }
+    //     if($getIdentity){
+            
+    //         return $decoded;
+    //     }
+    //     return $auth;        
+    // }
 }
