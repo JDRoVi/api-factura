@@ -11,7 +11,7 @@ class UserController extends Controller
 {
     public function __construct()
     {
-      $this->middleware('api.auth',['except'=>['login']]);
+      $this->middleware('api.auth',['except'=>['login','store']]);
     }
 
     public function __invoke(){
@@ -52,7 +52,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $json = $request->input('json', null);
-        $data = json_decode($json, true);
+        $data = json_decode($json,true);
         if (!empty($data)) {
             $data = array_map('trim', $data);
             $rules = [

@@ -61,7 +61,7 @@ class ClientController extends Controller
         $data = array_map('trim', $data);
         $rules =[
             'id' =>'required|numeric',
-            'nombre' =>'required|alpha',
+            'nombre' =>'required',
             'direccion'=>'required',
             'telefono'=>'numeric',
             'correo'=>'required|email|unique:cliente'

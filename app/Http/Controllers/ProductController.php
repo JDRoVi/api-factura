@@ -85,7 +85,7 @@ class ProductController extends Controller
      */
     public function show($codigo)
     {
-        $data=Product::where('CodigoProducto',$CodigoProducto)->first();
+        $data=Product::where('CodigoProducto',$codigo)->first();
         if(is_object($data)){
             $data = $data->load('Provider');
             $response=array(

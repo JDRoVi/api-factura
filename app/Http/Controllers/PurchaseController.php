@@ -41,7 +41,7 @@ class PurchaseController extends Controller
     public function store(Request $request)
     {
         $json = $request->input('json', null);
-        $data = json_decode($json, true);
+        $data = json_decode($json,true);
         $data = array_map('trim', $data);
         $rules = [
             'idBodeguero' => 'required|numeric',

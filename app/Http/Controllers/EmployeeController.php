@@ -27,51 +27,58 @@ class EmployeeController extends Controller
         }
         return response()->json($response, $response['code']);
     }
-    
-    
+
+
     /**
      * Store a newly created resource in storage.
-    */
+     */
     public function store(Request $request)
     {
         $json = $request->input('json', null);
-        $data = json_decode($json, true);
-        $data = array_map('trim', $data);
-        $rules =[
-            'id' =>'required|numeric',
-            'nombre' =>'required|alpha',
-            'apellido'=>'required|alpha',
-            'direccion'=>'required',
-            'telefono'=>'numeric',
-            'correo'=>'required|email|unique:cliente',
-            'tipo'=>'numeric',
-        ];
+        $data = json_decode($json,true);
+        if (!empty($data)) {
+            $data = array_map('trim', $data);
+            $rules = [
+                'id' => 'required|numeric',
+                'nombre' => 'required|alpha',
+                'apellido' => 'required|alpha',
+                'direccion' => 'required',
+                'telefono' => 'numeric',
+                'correo' => 'required|email|unique:cliente',
+                'tipo' => 'numeric',
+            ];
 
-        $valid = \validator($data, $rules);
-        if ($valid->fails()) {
+            $valid = \validator($data, $rules);
+            if ($valid->fails()) {
+                $response = array(
+                    'status' => 'error',
+                    'code' => 406,
+                    'message' => 'Los datos son incorrectos',
+                    'errors' => $valid->errors()
+                );
+            } else {
+                $category = new Employee();
+                $category->id = $data['id'];
+                $category->nombre = $data['nombre'];
+                $category->apellido = $data['apellido'];
+                $category->direccion = $data['direccion'];
+                $category->telefono = $data['telefono'];
+                $category->correo = $data['correo'];
+                $category->tipo = $data['tipo'];
+                $category->save();
+                $response = array(
+                    'status' => 'success',
+                    'code' => 200,
+                    'message' => 'Datos almacenados satisfactoriamente'
+                );
+            }
+        } else {
             $response = array(
                 'status' => 'error',
-                'code' => 406,
-                'message' => 'Los datos son incorrectos',
-                'errors' => $valid->errors()
-            );
-        } else {
-            $category = new Employee();
-            $category->id = $data['id'];
-            $category->nombre = $data['nombre'];
-            $category->apellido = $data['apellido'];
-            $category->direccion = $data['direccion'];
-            $category->telefono = $data['telefono'];
-            $category->correo = $data['correo'];
-            $category->tipo = $data['tipo'];
-            $category->save();
-            $response = array(
-                'status' => 'success',
-                'code' => 200,
-                'message' => 'Datos almacenados satisfactoriamente'
+                'code' => 404,
+                'message' => 'Recurso no encontrado'
             );
         }
-
         return response()->json($response, $response['code']);
     }
 
@@ -98,7 +105,7 @@ class EmployeeController extends Controller
                 'message' => 'Recurso no encontrado'
             );
         }
-        return response()->json($response,$response['code']);
+        return response()->json($response, $response['code']);
     }
 
     /**
@@ -115,13 +122,13 @@ class EmployeeController extends Controller
         if (!empty($data)) {
             $data = array_map('trim', $data);
             $rules = [ //se dictan las reglas en cuanto al ingreso de los datos
-                'id'=>'required',
+                'id' => 'required',
                 'nombre' => 'required|alpha',
                 'apellido' => 'required|alpha',
                 'direccion' => 'required',
                 'telefono' => 'numeric',
                 'correo' => 'required|email',
-                'tipo' =>'required'
+                'tipo' => 'required'
             ];
             $validate = \validator($data, $rules);
             if ($validate->fails()) { //determina si los datos siguen las reglas
@@ -132,7 +139,7 @@ class EmployeeController extends Controller
                     'errors' => $validate->errors()
                 );
             } else {
-                $id=$data['id'];
+                $id = $data['id'];
                 unset($data['id']);
                 unset($data['created_at']);
                 $updated = Employee::where('id', $id)->update($data);
@@ -157,7 +164,7 @@ class EmployeeController extends Controller
                 'message' => 'Faltan Datos'
             );
         }
-        return response()->json($response,$response['code']);
+        return response()->json($response, $response['code']);
     }
 
     /**
